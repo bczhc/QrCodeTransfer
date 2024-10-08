@@ -11,7 +11,6 @@ import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import pers.zhc.android.qrcodetransfer.databinding.ActivityReceiveBinding
 import pers.zhc.android.qrcodetransfer.utils.*
 import java.text.SimpleDateFormat
@@ -19,7 +18,7 @@ import java.util.*
 
 class ReceiveActivity : AppCompatActivity() {
     private lateinit var bindings: ActivityReceiveBinding
-    private var lastSocketWriteChannel: ByteWriteChannel? = null
+    private var writeChannel: ByteWriteChannel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +26,7 @@ class ReceiveActivity : AppCompatActivity() {
         setContentView(bindings.root)
 
         bindings.responseBtn.setOnClickListener {
-            val writeChannel = lastSocketWriteChannel ?: run {
+            val writeChannel = writeChannel ?: run {
                 toast("无连接。")
                 return@setOnClickListener
             }
@@ -76,13 +75,11 @@ class ReceiveActivity : AppCompatActivity() {
             while (true) {
                 val socket = serverSocket.accept()
                 logAppend("Accepted: $socket")
-                launch {
-                    runCatching {
-                        handleConnection(socket)
-                    }.onFailure {
-                        it.printStackTrace()
-                        logAppend("Socket error: $it")
-                    }
+                runCatching {
+                    handleConnection(socket)
+                }.onFailure {
+                    it.printStackTrace()
+                    logAppend("Socket error: $it")
                 }
             }
         }
@@ -90,7 +87,7 @@ class ReceiveActivity : AppCompatActivity() {
 
     private suspend fun handleConnection(socket: Socket) {
         val readChannel = socket.openReadChannel()
-        lastSocketWriteChannel = socket.openWriteChannel(autoFlush = true)
+        writeChannel = socket.openWriteChannel(autoFlush = true)
         if (!readChannel.checkHeader()) {
             logAppend("Invalid header")
             return
@@ -105,7 +102,7 @@ class ReceiveActivity : AppCompatActivity() {
         }
     }
 
-    private val logDateFormatter by lazy {SimpleDateFormat("[HH:mm:ss]", Locale.getDefault())}
+    private val logDateFormatter by lazy { SimpleDateFormat("[HH:mm:ss]", Locale.getDefault()) }
 
     private suspend fun logAppend(line: String) {
         val logDate = logDateFormatter.format(Date())
