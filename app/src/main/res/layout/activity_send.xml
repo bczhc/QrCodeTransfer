@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@id/bottom_divider"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/qr_iv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/qr_wait_placeholder"
+                android:layout_width="match_parent"
+                android:layout_height="1024px"
+                android:gravity="center"
+                android:text="等待二维码……"
+                android:textAppearance="@style/TextAppearance.Material3.TitleLarge" />
+        </FrameLayout>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/log_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5sp"
+            tools:text="A\nB\nC" />
+    </LinearLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/bottom_divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottomRL" />
+
+    <RelativeLayout
+        android:id="@+id/bottomRL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:padding="50dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/response_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="回应" />
+    </RelativeLayout>
+</RelativeLayout>
