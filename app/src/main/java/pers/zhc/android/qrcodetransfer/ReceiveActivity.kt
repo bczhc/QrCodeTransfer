@@ -1,6 +1,8 @@
 package pers.zhc.android.qrcodetransfer
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
@@ -50,6 +52,8 @@ class ReceiveActivity : AppCompatActivity() {
             // go die, to finish the listening socket
             throw RuntimeException()
         }
+
+        bindings.ipTv.text = getWifiIpString(this)
     }
 
     private fun ActivityReceiveBinding.setQrCode(content: String?) {
@@ -116,5 +120,19 @@ class ReceiveActivity : AppCompatActivity() {
 
     companion object {
         private var lastBitmap: Bitmap? = null
+
+        @Suppress("DEPRECATION")
+        fun getWifiIpString(context: Context): String {
+            val wm = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+            val ipAddress = wm.connectionInfo.ipAddress
+            return String.format(
+                Locale.getDefault(),
+                "%d.%d.%d.%d",
+                ipAddress and 0xff,
+                ipAddress shr 8 and 0xff,
+                ipAddress shr 16 and 0xff,
+                ipAddress shr 24 and 0xff
+            )
+        }
     }
 }
