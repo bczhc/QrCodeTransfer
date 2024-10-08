@@ -4,13 +4,12 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.google.zxing.qrcode.QRCodeWriter
-import pers.zhc.android.qrcodetransfer.databinding.ActivitySendBinding
+import pers.zhc.android.qrcodetransfer.databinding.ActivityReceiveBinding
 
 class ReceiveActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val bindings = ActivitySendBinding.inflate(layoutInflater)
+        val bindings = ActivityReceiveBinding.inflate(layoutInflater)
         setContentView(bindings.root)
 
         bindings.responseBtn.setOnClickListener {
@@ -18,7 +17,7 @@ class ReceiveActivity : AppCompatActivity() {
         }
     }
 
-    private fun ActivitySendBinding.setQrCode(content: String?) {
+    private fun ActivityReceiveBinding.setQrCode(content: String?) {
         if (content == null) {
             qrWaitPlaceholder.visibility = View.VISIBLE
             qrIv.visibility = View.INVISIBLE
