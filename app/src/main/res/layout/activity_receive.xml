@@ -36,11 +36,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <TextView
-            android:id="@+id/log_tv"
+        <EditText
+            android:id="@+id/log_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:inputType="none"
             android:padding="5sp"
+            android:textSize="15sp"
+            tools:ignore="Autofill,LabelFor,TextFields"
             tools:text="A\nB\nC" />
     </LinearLayout>
 

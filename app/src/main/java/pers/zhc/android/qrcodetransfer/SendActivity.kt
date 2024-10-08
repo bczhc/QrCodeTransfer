@@ -10,6 +10,7 @@ import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import pers.zhc.android.qrcodetransfer.databinding.ActivitySendBinding
 import pers.zhc.android.qrcodetransfer.utils.createProgressDialog
 import pers.zhc.android.qrcodetransfer.utils.launchIo
@@ -50,6 +51,13 @@ class SendActivity : AppCompatActivity() {
                 val readChannel = socket.openReadChannel()
                 writeChannel = socket.openWriteChannel(autoFlush = true).also {
                     it.writeFully(HEADER)
+                }
+                launch {
+                    runCatching {
+                        while (true) {
+                            toast(readChannel.readMessage().type)
+                        }
+                    }
                 }
             }.onFailure {
                 toast("连接失败")

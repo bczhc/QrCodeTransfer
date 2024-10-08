@@ -1,27 +1,25 @@
 package pers.zhc.android.qrcodetransfer
 
-import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
+import io.ktor.utils.io.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import pers.zhc.android.qrcodetransfer.databinding.ActivityReceiveBinding
-import pers.zhc.android.qrcodetransfer.utils.QrCode
-import pers.zhc.android.qrcodetransfer.utils.androidAssert
-import pers.zhc.android.qrcodetransfer.utils.launchIo
-import pers.zhc.android.qrcodetransfer.utils.withMain
-import java.util.Date
+import pers.zhc.android.qrcodetransfer.utils.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ReceiveActivity : AppCompatActivity() {
     private lateinit var bindings: ActivityReceiveBinding
+    private var lastSocketWriteChannel: ByteWriteChannel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +27,20 @@ class ReceiveActivity : AppCompatActivity() {
         setContentView(bindings.root)
 
         bindings.responseBtn.setOnClickListener {
-            bindings.setQrCode("Hello")
+            val writeChannel = lastSocketWriteChannel ?: run {
+                toast("无连接。")
+                return@setOnClickListener
+            }
+            val dialog = createProgressDialog("正在发送……").also { it.show() }
+            lifecycleScope.launchIo {
+                runCatching {
+                    writeChannel.writeMessage(Message(MessageType.RESPONSE.type, ""))
+                    logAppend("Response sent")
+                }.onFailure {
+                    logAppend("Response sending error: $it")
+                }
+                withMain { dialog.dismiss() }
+            }
         }
 
         lifecycleScope.launchIo {
@@ -69,6 +80,7 @@ class ReceiveActivity : AppCompatActivity() {
                     runCatching {
                         handleConnection(socket)
                     }.onFailure {
+                        it.printStackTrace()
                         logAppend("Socket error: $it")
                     }
                 }
@@ -78,6 +90,7 @@ class ReceiveActivity : AppCompatActivity() {
 
     private suspend fun handleConnection(socket: Socket) {
         val readChannel = socket.openReadChannel()
+        lastSocketWriteChannel = socket.openWriteChannel(autoFlush = true)
         if (!readChannel.checkHeader()) {
             logAppend("Invalid header")
             return
@@ -88,22 +101,23 @@ class ReceiveActivity : AppCompatActivity() {
             androidAssert(message.type == MessageType.QRCODE.type)
 
             withMain { bindings.setQrCode(message.content) }
-            logAppend("Update QR code at: ${Date()}")
+            logAppend("Received content: ${message.content}")
         }
     }
 
+    private val logDateFormatter by lazy {SimpleDateFormat("[HH:mm:ss]", Locale.getDefault())}
+
     private suspend fun logAppend(line: String) {
+        val logDate = logDateFormatter.format(Date())
         withMain {
-            bindings.logTv.addLine(line)
+            bindings.logEt.apply {
+                append("$logDate $line\n")
+                setSelection(text.length)
+            }
         }
     }
 
     companion object {
         private var lastBitmap: Bitmap? = null
-    }
-
-    @SuppressLint("SetTextI18n")
-    fun TextView.addLine(line: String) {
-        this.text = "${this.text}$line\n"
     }
 }
