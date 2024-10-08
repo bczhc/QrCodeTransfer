@@ -10,5 +10,8 @@ fun Context.createProgressDialog(title: String): AlertDialog {
         .setTitle(title)
         .setView(CircularProgressIndicator(this).apply {
             isIndeterminate = true
-        }).create()
+        }).create().apply {
+            setCanceledOnTouchOutside(false)
+            setCancelable(false)
+        }
 }
