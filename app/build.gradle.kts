@@ -39,6 +39,9 @@ dependencies {
     implementation("io.ktor:ktor-client-cio-jvm:2.3.10")
     implementation("io.ktor:ktor-network:2.3.12")
     implementation("com.google.zxing:core:3.5.3")
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0") {
+        isTransitive = false
+    }
     implementation("com.google.code.gson:gson:2.10.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

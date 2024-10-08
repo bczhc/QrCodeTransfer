@@ -1,4 +1,4 @@
-package pers.zhc.android.qrcodetransfer
+package pers.zhc.android.qrcodetransfer.utils
 
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -6,7 +6,7 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
 
 
-object QrCodeUtils {
+object QrCode {
     fun generate(content: String): Bitmap {
         val writer = QRCodeWriter()
         val bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, 1024, 1024)

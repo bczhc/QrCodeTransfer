@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import pers.zhc.android.qrcodetransfer.databinding.ActivityReceiveBinding
+import pers.zhc.android.qrcodetransfer.utils.QrCode
 
 class ReceiveActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +26,7 @@ class ReceiveActivity : AppCompatActivity() {
             qrWaitPlaceholder.visibility = View.INVISIBLE
             qrIv.visibility = View.VISIBLE
             lastBitmap?.recycle()
-            val bitmap = QrCodeUtils.generate(content)
+            val bitmap = QrCode.generate(content)
             lastBitmap = bitmap
             qrIv.setImageBitmap(bitmap)
         }
