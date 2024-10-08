@@ -1,14 +1,8 @@
 package pers.zhc.android.qrcodetransfer
 
+import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
 import pers.zhc.android.qrcodetransfer.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -17,6 +11,11 @@ class MainActivity : AppCompatActivity() {
         val bindings = ActivityMainBinding.inflate(layoutInflater)
         setContentView(bindings.root)
 
-        bindings
+        bindings.sendBtn.setOnClickListener {
+            startActivity(Intent(this, SendActivity::class.java))
+        }
+        bindings.receiveBtn.setOnClickListener {
+            startActivity(Intent(this, ReceiveActivity::class.java))
+        }
     }
 }
