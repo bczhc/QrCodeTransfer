@@ -51,9 +51,10 @@
             android:layout_height="wrap_content"
             android:background="@color/transparent"
             android:inputType="none"
+            android:editable="false"
             android:padding="5sp"
             android:textSize="15sp"
-            tools:ignore="Autofill,LabelFor,TextFields"
+            tools:ignore="Autofill,Deprecated,LabelFor,TextFields"
             tools:text="A\nB\nC" />
     </LinearLayout>
 
