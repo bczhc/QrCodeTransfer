@@ -21,6 +21,10 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs["debug"]
+        }
+        debug {
+            signingConfig = signingConfigs["debug"]
         }
     }
     compileOptions {
@@ -32,6 +36,16 @@ android {
     }
     buildFeatures {
         viewBinding = true
+    }
+
+    signingConfigs {
+        val configs = asMap
+        configs["debug"]!!.apply {
+            storeFile = file("release.keystore")
+            storePassword = "123456"
+            keyAlias = "alias_name"
+            keyPassword = "123456"
+        }
     }
 }
 
